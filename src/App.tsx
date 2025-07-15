@@ -1,12 +1,13 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Header from './components/Header';
 import BrandCard from './components/BrandCard';
 import Stats from './components/Stats';
 import Pagination from './components/Pagination';
-import { sampleBrands } from './data/sampleBrands';
 import { Brand, BrandFilters, PaginationInfo } from './types/Brand';
+import { fetchBrandsFromNotion } from './lib/notion';
 
 function App() {
+  const [brands, setBrands] = useState<Brand[]>([]);
   const [filters, setFilters] = useState<BrandFilters>({
     search: '',
     category: 'All',
@@ -16,12 +17,15 @@ function App() {
     sortBy: 'name',
     sortOrder: 'asc'
   });
-
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 20;
 
+  useEffect(() => {
+    fetchBrandsFromNotion().then(setBrands);
+  }, []);
+
   const filteredAndSortedBrands = useMemo(() => {
-    let filtered = sampleBrands.filter((brand: Brand) => {
+    let filtered = brands.filter((brand: Brand) => {
       const matchesSearch = brand.name.toLowerCase().includes(filters.search.toLowerCase()) ||
                            brand.description.toLowerCase().includes(filters.search.toLowerCase()) ||
                            brand.ingredients.some(ingredient => 
@@ -69,7 +73,7 @@ function App() {
     });
 
     return filtered;
-  }, [filters]);
+  }, [brands, filters]);
 
   const paginatedBrands = useMemo(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
@@ -98,7 +102,7 @@ function App() {
       <Header
         filters={filters}
         setFilters={setFilters}
-        totalBrands={sampleBrands.length}
+        totalBrands={brands.length}
         filteredCount={filteredAndSortedBrands.length}
       />
       
@@ -112,7 +116,7 @@ function App() {
           </p>
         </div>
         
-        <Stats brands={sampleBrands} filteredBrands={filteredAndSortedBrands} />
+        <Stats brands={brands} filteredBrands={filteredAndSortedBrands} />
         
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
           {paginatedBrands.length === 0 ? (
