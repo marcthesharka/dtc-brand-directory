@@ -1,13 +1,14 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import Header from './components/Header';
 import BrandCard from './components/BrandCard';
 import Stats from './components/Stats';
 import Pagination from './components/Pagination';
+import { useBrands } from './hooks/useBrands';
 import { Brand, BrandFilters, PaginationInfo } from './types/Brand';
-import { fetchBrandsFromNotion } from './lib/notion';
 
 function App() {
-  const [brands, setBrands] = useState<Brand[]>([]);
+  const { brands: notionBrands, loading, error } = useBrands();
+  
   const [filters, setFilters] = useState<BrandFilters>({
     search: '',
     category: 'All',
@@ -17,15 +18,12 @@ function App() {
     sortBy: 'name',
     sortOrder: 'asc'
   });
+
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 20;
 
-  useEffect(() => {
-    fetchBrandsFromNotion().then(setBrands);
-  }, []);
-
   const filteredAndSortedBrands = useMemo(() => {
-    let filtered = brands.filter((brand: Brand) => {
+    let filtered = notionBrands.filter((brand: Brand) => {
       const matchesSearch = brand.name.toLowerCase().includes(filters.search.toLowerCase()) ||
                            brand.description.toLowerCase().includes(filters.search.toLowerCase()) ||
                            brand.ingredients.some(ingredient => 
@@ -73,7 +71,7 @@ function App() {
     });
 
     return filtered;
-  }, [brands, filters]);
+  }, [filters, notionBrands]);
 
   const paginatedBrands = useMemo(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
@@ -97,12 +95,33 @@ function App() {
     setCurrentPage(1);
   }, [filters]);
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading brands from Notion...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-600 mb-4">{error}</p>
+          <p className="text-gray-600">Please check your Notion integration setup.</p>
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="min-h-screen bg-gray-50">
       <Header
         filters={filters}
         setFilters={setFilters}
-        totalBrands={brands.length}
+        totalBrands={notionBrands.length}
         filteredCount={filteredAndSortedBrands.length}
       />
       
@@ -116,7 +135,7 @@ function App() {
           </p>
         </div>
         
-        <Stats brands={brands} filteredBrands={filteredAndSortedBrands} />
+        <Stats brands={notionBrands} filteredBrands={filteredAndSortedBrands} />
         
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
           {paginatedBrands.length === 0 ? (

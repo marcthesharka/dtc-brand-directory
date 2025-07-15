@@ -1,6 +1,6 @@
 # Cool Eats & Drinks - DTC Brand Directory
 
-A comprehensive directory platform for discovering new Direct-to-Consumer (DTC) food and beverage brands. Built with React, TypeScript, Tailwind CSS, and Supabase.
+A comprehensive directory platform for discovering new Direct-to-Consumer (DTC) food and beverage brands. Built with React, TypeScript, Tailwind CSS, and Notion API.
 
 ## Features
 
@@ -31,38 +31,39 @@ A comprehensive directory platform for discovering new Direct-to-Consumer (DTC) 
 ## Technology Stack
 
 - **Frontend**: React 18, TypeScript, Tailwind CSS
-- **Backend**: Supabase (PostgreSQL)
+- **Backend**: Notion API
 - **Icons**: Lucide React
 - **Build Tool**: Vite
 - **Deployment**: Ready for Netlify/Vercel
 
-## Database Schema
+## Notion Database Setup
 
-### Brands Table
-```sql
-- id (uuid, primary key)
-- name (text, brand name)
-- description (text, brand description)  
-- category (enum: Food, Beverages, Snacks, Supplements, Condiments, Desserts)
-- price_point (enum: Low, Mid, Premium)
-- launch_year (integer)
-- website (text)
-- social_media (jsonb: instagram/twitter followers)
-- influencers (text[], influencer handles)
-- retail_stores (text[], store names)
-- rating (decimal, 0-5 scale)
-- logo_url (text, brand logo)
-- ingredients (text[], full ingredient list)
-- target_audience (jsonb, AI-generated profile)
-- is_new (boolean, new brand flag)
-- created_at/updated_at (timestamps)
-```
+### Required Notion Database Properties
+
+Create a Notion database with the following properties:
+
+| Property Name | Type | Options/Format |
+|---------------|------|----------------|
+| **Name** | Title | Brand name |
+| **Description** | Text | Brand description |
+| **Category** | Select | Food, Beverages, Snacks, Supplements, Condiments, Desserts |
+| **Price Point** | Select | Low, Mid, Premium |
+| **Launch Year** | Number | Year established |
+| **Website** | Text | Website URL |
+| **Social Media** | Text | JSON: `{"instagram": 45000, "twitter": 12000}` |
+| **Influencers** | Multi-select | Influencer handles |
+| **Retail Stores** | Multi-select | Store names |
+| **Rating** | Number | 0-5 scale |
+| **Logo** | Files & media | Brand logo image |
+| **Ingredients** | Multi-select | Full ingredient list |
+| **Target Audience** | Text | JSON: `{"demographics": "...", "lifestyle": "...", "values": "...", "painPoints": [...]}` |
+| **Is New** | Checkbox | New brand flag |
 
 ## Getting Started
 
 ### Prerequisites
 - Node.js 18+
-- Supabase account
+- Notion account with integration setup
 - Environment variables configured
 
 ### Installation
@@ -70,17 +71,29 @@ A comprehensive directory platform for discovering new Direct-to-Consumer (DTC) 
 npm install
 ```
 
+### Notion Integration Setup
+
+1. **Create a Notion Integration**:
+   - Go to https://www.notion.so/my-integrations
+   - Click "New integration"
+   - Give it a name and select your workspace
+   - Copy the "Internal Integration Token"
+
+2. **Share Database with Integration**:
+   - Open your Notion database
+   - Click "Share" → "Invite"
+   - Search for your integration name and invite it
+
+3. **Get Database ID**:
+   - Copy the database URL: `https://notion.so/workspace/DATABASE_ID?v=...`
+   - Extract the DATABASE_ID (32-character string)
+
 ### Environment Setup
 Create a `.env` file:
 ```
-VITE_SUPABASE_URL=your_supabase_url
-VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+VITE_NOTION_TOKEN=your_notion_integration_token
+VITE_NOTION_DATABASE_ID=your_notion_database_id
 ```
-
-### Database Setup
-1. Create a new Supabase project
-2. Run the migration file in the Supabase SQL editor
-3. The database will be automatically configured with proper RLS policies
 
 ### Development
 ```bash
@@ -92,6 +105,31 @@ npm run dev
 npm run build
 ```
 
+## Notion Database Management
+
+### Adding New Brands
+1. Open your Notion database
+2. Click "New" to create a new page
+3. Fill in all the required properties
+4. The website will automatically fetch and display the new brand
+
+### Data Format Examples
+
+**Social Media** (Text field with JSON):
+```json
+{"instagram": 45000, "twitter": 12000}
+```
+
+**Target Audience** (Text field with JSON):
+```json
+{
+  "demographics": "Health-conscious millennials, ages 25-40",
+  "lifestyle": "Busy professionals seeking convenient nutrition",
+  "values": "Sustainability, clean eating, transparency",
+  "painPoints": ["Lack of time for proper nutrition", "Energy crashes"]
+}
+```
+
 ## Scaling Considerations
 
 ### Performance Optimization
@@ -101,10 +139,10 @@ npm run build
 - **Caching**: Browser caching for static assets
 
 ### Data Management
-- **Bulk Import**: CSV/JSON import capabilities for large brand datasets
-- **API Integration**: Ready for third-party data source integration
-- **Content Moderation**: Admin tools for brand approval and management
-- **Analytics**: User behavior tracking and brand performance metrics
+- **Notion Database**: Easy content management through familiar Notion interface
+- **Bulk Import**: Use Notion's CSV import for large brand datasets
+- **Collaborative Editing**: Multiple team members can manage brand data
+- **Version History**: Notion's built-in version control for all changes
 
 ### Future Enhancements
 - **AI-Powered Recommendations**: Personalized brand suggestions
@@ -112,6 +150,7 @@ npm run build
 - **Brand Verification**: Verified brand profiles and official accounts
 - **Advanced Analytics**: Market trends and brand performance insights
 - **Mobile App**: Native iOS/Android applications
+- **Notion Automation**: Use Notion's API for automated data processing
 
 ## Contributing
 
