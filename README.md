@@ -31,10 +31,26 @@ A comprehensive directory platform for discovering new Direct-to-Consumer (DTC) 
 ## Technology Stack
 
 - **Frontend**: React 18, TypeScript, Tailwind CSS
-- **Backend**: Notion API
+- **Database**: Supabase (PostgreSQL)
 - **Icons**: Lucide React
 - **Build Tool**: Vite
-- **Deployment**: Ready for Netlify/Vercel
+- **Deployment**: Optimized for Vercel
+
+## Vercel Deployment
+
+This project is optimized for Vercel deployment with:
+- Automatic build detection
+- Environment variable support
+- Edge function compatibility
+- Static site generation
+
+### Deploy to Vercel
+
+1. **Connect your repository** to Vercel
+2. **Set environment variables** in Vercel dashboard:
+   - `VITE_SUPABASE_URL`
+   - `VITE_SUPABASE_ANON_KEY`
+3. **Deploy** - Vercel will automatically detect the build settings
 
 ## Notion Database Setup
 

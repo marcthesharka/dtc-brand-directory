@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Star, Users, Instagram, Twitter, Store, ExternalLink, Badge, ChevronDown, ChevronUp, Leaf } from 'lucide-react';
+import { Star, Users, Instagram, Twitter, Store, ExternalLink, ChevronDown, ChevronUp, Leaf } from 'lucide-react';
 import { Brand } from '../types/Brand';
 
 interface BrandCardProps {
@@ -11,128 +11,136 @@ const BrandCard: React.FC<BrandCardProps> = ({ brand }) => {
 
   const getPricePointColor = (pricePoint: string) => {
     switch (pricePoint) {
-      case 'Low': return 'bg-green-100 text-green-800';
-      case 'Mid': return 'bg-yellow-100 text-yellow-800';
-      case 'Premium': return 'bg-purple-100 text-purple-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'Low': return 'bg-green-100 text-green-700';
+      case 'Mid': return 'bg-yellow-100 text-yellow-700';
+      case 'Premium': return 'bg-purple-100 text-purple-700';
+      default: return 'bg-gray-100 text-gray-700';
     }
   };
 
   const getCategoryColor = (category: string) => {
     switch (category) {
-      case 'Food': return 'bg-orange-100 text-orange-800';
-      case 'Beverages': return 'bg-blue-100 text-blue-800';
-      case 'Snacks': return 'bg-red-100 text-red-800';
-      case 'Supplements': return 'bg-green-100 text-green-800';
-      case 'Condiments': return 'bg-yellow-100 text-yellow-800';
-      case 'Desserts': return 'bg-pink-100 text-pink-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'Food': return 'bg-orange-100 text-orange-700';
+      case 'Beverages': return 'bg-blue-100 text-blue-700';
+      case 'Snacks': return 'bg-red-100 text-red-700';
+      case 'Supplements': return 'bg-green-100 text-green-700';
+      case 'Condiments': return 'bg-yellow-100 text-yellow-700';
+      case 'Desserts': return 'bg-pink-100 text-pink-700';
+      default: return 'bg-gray-100 text-gray-700';
     }
   };
 
   const formatFollowers = (count: number) => {
-    if (count >= 1000) {
-      return `${(count / 1000).toFixed(1)}k`;
-    }
+    if (count >= 1000000) return `${(count / 1000000).toFixed(1)}M`;
+    if (count >= 1000) return `${(count / 1000).toFixed(0)}k`;
     return count.toString();
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 border border-gray-200 overflow-hidden">
-      <div className="flex items-center p-4">
-        {/* Logo */}
-        <div className="w-16 h-16 flex-shrink-0 mr-4">
+    <div className="bg-white hover:bg-gray-50 transition-colors duration-150">
+      {/* Compact Main Row */}
+      <div className="flex items-center px-4 py-2 text-sm">
+        {/* Logo - Very Small */}
+        <div className="w-8 h-8 flex-shrink-0 mr-3">
           <img 
             src={brand.logoUrl} 
             alt={`${brand.name} logo`}
-            className="w-full h-full object-cover rounded-lg border border-gray-200"
+            className="w-full h-full object-cover rounded border border-gray-200"
           />
         </div>
         
-        {/* Main Content */}
-        <div className="flex-1 min-w-0">
-          <div className="flex items-start justify-between">
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center space-x-2 mb-1">
-                <h3 className="text-lg font-semibold text-gray-900 truncate">{brand.name}</h3>
-                {brand.isNew && (
-                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
-                    <Badge className="h-3 w-3 mr-1" />
-                    New
-                  </span>
-                )}
-                <div className="flex items-center space-x-1">
-                  <Star className="h-4 w-4 text-yellow-400 fill-current" />
-                  <span className="text-sm font-medium text-gray-700">{brand.rating}</span>
-                </div>
-              </div>
-              
-              <p className="text-sm text-gray-600 mb-2 line-clamp-2">{brand.description}</p>
-              
-              <div className="flex items-center space-x-2 mb-2">
-                <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${getCategoryColor(brand.category)}`}>
-                  {brand.category}
-                </span>
-                <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${getPricePointColor(brand.pricePoint)}`}>
-                  {brand.pricePoint}
-                </span>
-                <span className="text-xs text-gray-500">Est. {brand.launchYear}</span>
-              </div>
-              
-              <div className="flex items-center space-x-4 text-xs text-gray-500">
-                <div className="flex items-center space-x-1">
-                  <Instagram className="h-3 w-3" />
-                  <span>{formatFollowers(brand.socialMedia.instagram)}</span>
-                </div>
-                <div className="flex items-center space-x-1">
-                  <Twitter className="h-3 w-3" />
-                  <span>{formatFollowers(brand.socialMedia.twitter)}</span>
-                </div>
-                <div className="flex items-center space-x-1">
-                  <Store className="h-3 w-3" />
-                  <span>{brand.retailStores.length} stores</span>
-                </div>
-              </div>
-            </div>
-            
-            {/* Action Buttons */}
-            <div className="flex items-center space-x-2 ml-4">
-              <a 
-                href={`https://${brand.website}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center space-x-1 text-emerald-600 hover:text-emerald-700 text-sm font-medium px-3 py-1 rounded-md hover:bg-emerald-50 transition-colors"
-              >
-                <ExternalLink className="h-3 w-3" />
-                <span>Visit</span>
-              </a>
-              
-              <button
-                onClick={() => setShowDetails(!showDetails)}
-                className="flex items-center space-x-1 text-gray-600 hover:text-gray-700 text-sm font-medium px-3 py-1 rounded-md hover:bg-gray-50 transition-colors"
-              >
-                <Leaf className="h-3 w-3" />
-                <span>Details</span>
-                {showDetails ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
-              </button>
-            </div>
+        {/* Brand Name & New Badge */}
+        <div className="min-w-0 flex-1 max-w-xs">
+          <div className="flex items-center space-x-2">
+            <h3 className="font-medium text-gray-900 truncate text-sm">{brand.name}</h3>
+            {brand.isNew && (
+              <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-emerald-100 text-emerald-700">
+                New
+              </span>
+            )}
           </div>
+        </div>
+        
+        {/* Category */}
+        <div className="hidden sm:block min-w-0 flex-1 max-w-xs px-2">
+          <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${getCategoryColor(brand.category)}`}>
+            {brand.category}
+          </span>
+        </div>
+        
+        {/* Price Point */}
+        <div className="hidden md:block min-w-0 flex-1 max-w-xs px-2">
+          <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${getPricePointColor(brand.pricePoint)}`}>
+            {brand.pricePoint}
+          </span>
+        </div>
+        
+        {/* Launch Year */}
+        <div className="hidden lg:block min-w-0 flex-1 max-w-xs px-2 text-xs text-gray-500">
+          {brand.launchYear}
+        </div>
+        
+        {/* Rating */}
+        <div className="min-w-0 flex-1 max-w-xs px-2">
+          <div className="flex items-center space-x-1">
+            <Star className="h-3 w-3 text-yellow-400 fill-current" />
+            <span className="text-xs font-medium text-gray-700">{brand.rating}</span>
+          </div>
+        </div>
+        
+        {/* Social Metrics */}
+        <div className="hidden sm:flex min-w-0 flex-1 max-w-xs px-2 items-center space-x-3 text-xs text-gray-500">
+          <div className="flex items-center space-x-1">
+            <Instagram className="h-3 w-3" />
+            <span>{formatFollowers(brand.socialMedia.instagram)}</span>
+          </div>
+          <div className="flex items-center space-x-1">
+            <Twitter className="h-3 w-3" />
+            <span>{formatFollowers(brand.socialMedia.twitter)}</span>
+          </div>
+        </div>
+        
+        {/* Actions */}
+        <div className="flex items-center space-x-1 ml-2">
+          <a 
+            href={`https://${brand.website}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center space-x-1 text-emerald-600 hover:text-emerald-700 text-xs font-medium px-2 py-1 rounded hover:bg-emerald-50 transition-colors"
+          >
+            <ExternalLink className="h-3 w-3" />
+            <span className="hidden sm:inline">Visit</span>
+          </a>
+          
+          <button
+            onClick={() => setShowDetails(!showDetails)}
+            className="flex items-center space-x-1 text-gray-600 hover:text-gray-700 text-xs font-medium px-2 py-1 rounded hover:bg-gray-50 transition-colors"
+          >
+            <Leaf className="h-3 w-3" />
+            <span className="hidden sm:inline">Details</span>
+            {showDetails ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+          </button>
         </div>
       </div>
       
       {/* Expanded Details */}
       {showDetails && (
-        <div className="border-t border-gray-200 bg-gray-50 p-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="border-t border-gray-100 bg-gray-50 px-4 py-3">
+          {/* Description */}
+          <div className="mb-3">
+            <p className="text-sm text-gray-600 leading-relaxed">{brand.description}</p>
+          </div>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 text-xs">
             {/* Ingredients */}
             <div>
-              <h4 className="text-sm font-semibold text-gray-900 mb-2 flex items-center">
-                <Leaf className="h-4 w-4 mr-1 text-green-600" />
+              <h4 className="text-sm font-medium text-gray-900 mb-2 flex items-center">
+                <Leaf className="h-3 w-3 mr-1 text-green-600" />
                 Ingredients
               </h4>
-              <div className="space-y-1">
+              <div className="flex flex-wrap gap-1">
                 {brand.ingredients.map((ingredient, index) => (
-                  <span key={index} className="inline-block bg-white text-gray-700 px-2 py-1 rounded text-xs mr-1 mb-1 border">
+                  <span key={index} className="inline-block bg-white text-gray-600 px-2 py-1 rounded text-xs border">
                     {ingredient}
                   </span>
                 ))}
@@ -141,34 +149,26 @@ const BrandCard: React.FC<BrandCardProps> = ({ brand }) => {
             
             {/* Target Audience */}
             <div>
-              <h4 className="text-sm font-semibold text-gray-900 mb-2 flex items-center">
-                <Users className="h-4 w-4 mr-1 text-blue-600" />
+              <h4 className="text-sm font-medium text-gray-900 mb-2 flex items-center">
+                <Users className="h-3 w-3 mr-1 text-blue-600" />
                 Target Audience
               </h4>
-              <div className="space-y-2 text-xs text-gray-600">
-                <div>
-                  <span className="font-medium text-gray-700">Demographics:</span> {brand.targetAudience.demographics}
-                </div>
-                <div>
-                  <span className="font-medium text-gray-700">Lifestyle:</span> {brand.targetAudience.lifestyle}
-                </div>
-                <div>
-                  <span className="font-medium text-gray-700">Values:</span> {brand.targetAudience.values}
-                </div>
-                <div>
-                  <span className="font-medium text-gray-700">Pain Points:</span> {brand.targetAudience.painPoints.join(', ')}
-                </div>
+              <div className="space-y-1 text-xs text-gray-600">
+                <div><span className="font-medium text-gray-700">Demographics:</span> {brand.targetAudience.demographics}</div>
+                <div><span className="font-medium text-gray-700">Lifestyle:</span> {brand.targetAudience.lifestyle}</div>
+                <div><span className="font-medium text-gray-700">Values:</span> {brand.targetAudience.values}</div>
+                <div><span className="font-medium text-gray-700">Pain Points:</span> {brand.targetAudience.painPoints.join(', ')}</div>
               </div>
             </div>
           </div>
           
-          {/* Influencers and Retail Stores */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4 pt-4 border-t border-gray-200">
+          {/* Additional Info */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-3 pt-3 border-t border-gray-200">
             <div>
-              <h4 className="text-sm font-semibold text-gray-900 mb-2">Influencer Partners</h4>
+              <h4 className="text-sm font-medium text-gray-900 mb-1">Influencer Partners</h4>
               <div className="flex flex-wrap gap-1">
                 {brand.influencers.map((influencer, index) => (
-                  <span key={index} className="inline-block bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs">
+                  <span key={index} className="inline-block bg-blue-50 text-blue-700 px-2 py-0.5 rounded text-xs">
                     {influencer}
                   </span>
                 ))}
@@ -176,10 +176,10 @@ const BrandCard: React.FC<BrandCardProps> = ({ brand }) => {
             </div>
             
             <div>
-              <h4 className="text-sm font-semibold text-gray-900 mb-2">Available At</h4>
+              <h4 className="text-sm font-medium text-gray-900 mb-1">Available At</h4>
               <div className="flex flex-wrap gap-1">
                 {brand.retailStores.map((store, index) => (
-                  <span key={index} className="inline-block bg-green-100 text-green-700 px-2 py-1 rounded text-xs">
+                  <span key={index} className="inline-block bg-green-50 text-green-700 px-2 py-0.5 rounded text-xs">
                     {store}
                   </span>
                 ))}

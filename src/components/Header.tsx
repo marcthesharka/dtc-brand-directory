@@ -27,18 +27,18 @@ const Header: React.FC<HeaderProps> = ({ filters, setFilters, totalBrands, filte
   return (
     <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-14">
           <div className="flex items-center space-x-3">
             <Sparkles className="h-8 w-8 text-emerald-600" />
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Cool Eats & Drinks</h1>
-              <p className="text-xs text-gray-500">
+              <h1 className="text-xl font-bold text-gray-900">Cool Eats & Drinks</h1>
+              <p className="text-xs text-gray-500 leading-tight">
                 Showing {filteredCount} of {totalBrands} brands
               </p>
             </div>
           </div>
           
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-2">
             {/* Search */}
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -47,18 +47,18 @@ const Header: React.FC<HeaderProps> = ({ filters, setFilters, totalBrands, filte
                 placeholder="Search brands..."
                 value={filters.search}
                 onChange={(e) => updateFilter('search', e.target.value)}
-                className="pl-10 pr-4 py-2 w-64 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm"
+                className="pl-10 pr-4 py-1.5 w-48 border border-gray-300 rounded-md focus:ring-1 focus:ring-emerald-500 focus:border-transparent text-sm"
               />
             </div>
             
             {/* Filters */}
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-1">
               <Filter className="h-4 w-4 text-gray-500" />
               
               <select
                 value={filters.category}
                 onChange={(e) => updateFilter('category', e.target.value)}
-                className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm"
+                className="border border-gray-300 rounded-md px-2 py-1.5 focus:ring-1 focus:ring-emerald-500 focus:border-transparent text-sm"
               >
                 {categories.map(category => (
                   <option key={category} value={category}>{category}</option>
@@ -68,7 +68,7 @@ const Header: React.FC<HeaderProps> = ({ filters, setFilters, totalBrands, filte
               <select
                 value={filters.pricePoint}
                 onChange={(e) => updateFilter('pricePoint', e.target.value)}
-                className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm"
+                className="border border-gray-300 rounded-md px-2 py-1.5 focus:ring-1 focus:ring-emerald-500 focus:border-transparent text-sm"
               >
                 {pricePoints.map(price => (
                   <option key={price} value={price}>{price}</option>
@@ -78,7 +78,7 @@ const Header: React.FC<HeaderProps> = ({ filters, setFilters, totalBrands, filte
               <select
                 value={filters.launchYear}
                 onChange={(e) => updateFilter('launchYear', e.target.value)}
-                className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm"
+                className="border border-gray-300 rounded-md px-2 py-1.5 focus:ring-1 focus:ring-emerald-500 focus:border-transparent text-sm"
               >
                 {launchYears.map(year => (
                   <option key={year} value={year}>{year}</option>
@@ -87,11 +87,11 @@ const Header: React.FC<HeaderProps> = ({ filters, setFilters, totalBrands, filte
             </div>
             
             {/* Sort */}
-            <div className="flex items-center space-x-1 border-l border-gray-300 pl-3">
+            <div className="flex items-center space-x-1 border-l border-gray-300 pl-2">
               <select
                 value={filters.sortBy}
                 onChange={(e) => updateFilter('sortBy', e.target.value)}
-                className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm"
+                className="border border-gray-300 rounded-md px-2 py-1.5 focus:ring-1 focus:ring-emerald-500 focus:border-transparent text-sm"
               >
                 {sortOptions.map(option => (
                   <option key={option.value} value={option.value}>{option.label}</option>
@@ -100,7 +100,7 @@ const Header: React.FC<HeaderProps> = ({ filters, setFilters, totalBrands, filte
               
               <button
                 onClick={() => updateFilter('sortOrder', filters.sortOrder === 'asc' ? 'desc' : 'asc')}
-                className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50 focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                className="p-1.5 border border-gray-300 rounded-md hover:bg-gray-50 focus:ring-1 focus:ring-emerald-500 focus:border-transparent"
               >
                 {filters.sortOrder === 'asc' ? 
                   <SortAsc className="h-4 w-4 text-gray-600" /> : 

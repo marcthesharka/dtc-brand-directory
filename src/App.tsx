@@ -1,13 +1,15 @@
 import React, { useState, useMemo } from 'react';
+import { Plus } from 'lucide-react';
 import Header from './components/Header';
 import BrandCard from './components/BrandCard';
 import Stats from './components/Stats';
 import Pagination from './components/Pagination';
-import { useBrands } from './hooks/useBrands';
-import { Brand, BrandFilters, PaginationInfo } from './types/Brand';
+import AddBrandForm from './components/AddBrandForm';
+import { sampleBrands } from './data/sampleBrands';
+import { BrandFilters, PaginationInfo } from './types/Brand';
 
 function App() {
-  const { brands: notionBrands, loading, error } = useBrands();
+  const brands = sampleBrands;
   
   const [filters, setFilters] = useState<BrandFilters>({
     search: '',
@@ -21,9 +23,10 @@ function App() {
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 20;
+  const [showAddForm, setShowAddForm] = useState(false);
 
   const filteredAndSortedBrands = useMemo(() => {
-    let filtered = notionBrands.filter((brand: Brand) => {
+    let filtered = brands.filter((brand) => {
       const matchesSearch = brand.name.toLowerCase().includes(filters.search.toLowerCase()) ||
                            brand.description.toLowerCase().includes(filters.search.toLowerCase()) ||
                            brand.ingredients.some(ingredient => 
@@ -71,7 +74,7 @@ function App() {
     });
 
     return filtered;
-  }, [filters, notionBrands]);
+  }, [filters, brands]);
 
   const paginatedBrands = useMemo(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
@@ -90,58 +93,45 @@ function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleBrandAdded = () => {
+    // In a real app, you'd refresh the data from Supabase here
+    // For now, we'll just show a success message
+    alert('Brand added successfully! Note: You\'ll need to refresh to see it in the sample data.');
+  };
+
   // Reset to first page when filters change
   React.useEffect(() => {
     setCurrentPage(1);
   }, [filters]);
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading brands from Notion...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-red-600 mb-4">{error}</p>
-          <p className="text-gray-600">Please check your Notion integration setup.</p>
-        </div>
-      </div>
-    );
-  }
   return (
     <div className="min-h-screen bg-gray-50">
       <Header
         filters={filters}
         setFilters={setFilters}
-        totalBrands={notionBrands.length}
+        totalBrands={brands.length}
         filteredCount={filteredAndSortedBrands.length}
       />
       
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="mb-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
-            Discover the Latest DTC Food & Drink Brands
-          </h2>
-          <p className="text-gray-600">
-            Explore innovative brands that are reshaping the food and beverage industry
-          </p>
+        <Stats brands={brands} filteredBrands={filteredAndSortedBrands} />
+        
+        {/* Add Brand Button */}
+        <div className="mb-4 flex justify-end">
+          <button
+            onClick={() => setShowAddForm(true)}
+            className="flex items-center space-x-2 bg-emerald-600 text-white px-4 py-2 rounded-md hover:bg-emerald-700 transition-colors"
+          >
+            <Plus className="h-4 w-4" />
+            <span>Add New Brand</span>
+          </button>
         </div>
         
-        <Stats brands={notionBrands} filteredBrands={filteredAndSortedBrands} />
-        
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+        <div className="bg-white rounded-md shadow-sm border border-gray-200 overflow-hidden">
           {paginatedBrands.length === 0 ? (
-            <div className="text-center py-12">
-              <p className="text-gray-500 text-lg">No brands found matching your criteria.</p>
-              <p className="text-gray-400 mt-2">Try adjusting your search or filters.</p>
+            <div className="text-center py-8">
+              <p className="text-gray-500">No brands found matching your criteria.</p>
+              <p className="text-gray-400 text-sm mt-1">Try adjusting your search or filters.</p>
             </div>
           ) : (
             <div className="divide-y divide-gray-200">
@@ -159,6 +149,12 @@ function App() {
           )}
         </div>
       </main>
+      
+      <AddBrandForm
+        isOpen={showAddForm}
+        onClose={() => setShowAddForm(false)}
+        onSuccess={handleBrandAdded}
+      />
     </div>
   );
 }
